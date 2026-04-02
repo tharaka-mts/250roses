@@ -1,1 +1,3 @@
-# 250 Roses Site
+# 250 Roses
+
+This project is created for UI purposes only.
