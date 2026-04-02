@@ -19,6 +19,11 @@
     <div class="brand">250 <span>Roses</span></div>
     <div class="slogan">hug & party</div>
   </a>
+  <div class="menu-toggle" id="mobile-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
   <ul class="nav-links">
     <li><a href="index.html">The Garden</a></li>
     <li><a href="catalog.html">The Collection</a></li>
@@ -65,21 +70,21 @@
         <span class="value-icon">💎</span>
         <span class="value-stat">5× </span>
         <span class="value-stat-label">Industry Average Earnings</span>
-        <h3 style="margin-top:16px;">High Earnings</h3>
+        <h3>High Earnings</h3>
         <p>Our roses earn significantly above market rate. We negotiate, secure, and guarantee your compensation with full transparency.</p>
       </div>
       <div class="value-item">
         <span class="value-icon">🛡️</span>
         <span class="value-stat">100%</span>
         <span class="value-stat-label">Safety Compliance</span>
-        <h3 style="margin-top:16px;">Absolute Safety</h3>
+        <h3>Absolute Safety</h3>
         <p>Your wellbeing is our number one priority. Every booking is vetted, every client is screened, and our team is available 24/7.</p>
       </div>
       <div class="value-item">
         <span class="value-icon">👑</span>
         <span class="value-stat">Elite</span>
         <span class="value-stat-label">Professional Management</span>
-        <h3 style="margin-top:16px;">Professional Management</h3>
+        <h3>Professional Management</h3>
         <p>From scheduling to branding, our team handles everything so you can focus on what you do best — being extraordinary.</p>
       </div>
     </div>
@@ -201,7 +206,7 @@
         <div class="upload-area" onclick="document.getElementById('photo1').click()">
           <span class="upload-icon">🌹</span>
           <p class="upload-text"><strong>Click to upload</strong> or drag & drop<br>PNG, JPG or WEBP · Max 10MB<br>High-resolution, clear lighting preferred</p>
-          <input type="file" id="photo1" accept="image/*" style="display:none">
+          <input type="file" id="photo1" accept="image/*" class="form-file-hidden">
         </div>
       </div>
       <div class="form-group">
@@ -209,10 +214,10 @@
         <div class="upload-area" onclick="document.getElementById('photos').click()">
           <span class="upload-icon">📸</span>
           <p class="upload-text"><strong>Upload additional photos</strong><br>Different angles, outfits, settings</p>
-          <input type="file" id="photos" accept="image/*" multiple style="display:none">
+          <input type="file" id="photos" accept="image/*" multiple class="form-file-hidden">
         </div>
       </div>
-      <div class="form-group" style="margin-top:10px;">
+      <div class="form-group spacing-sm">
         <label>Photo Style</label>
         <div class="radio-group" id="styleRadio">
           <div class="radio-option" data-value="editorial">Editorial</div>
@@ -261,7 +266,7 @@
         <label>Emergency Contact (Optional)</label>
         <input type="tel" class="form-input" placeholder="Emergency contact number">
       </div>
-      <div class="form-group" style="margin-top:24px;">
+      <div class="form-group spacing-lg">
         <label class="checkbox-group">
           <input type="checkbox" id="terms">
           <div class="checkbox-custom"></div>
@@ -289,7 +294,7 @@
       <h2 class="success-title">Welcome to the <em>Garden.</em></h2>
       <p class="success-text">Your application has been received with the utmost discretion. Our team will be in touch within 24–48 hours through your preferred contact method.</p>
       <br><br>
-      <a href="index.html" style="color:var(--gold); font-size:10px; letter-spacing:0.25em; text-transform:uppercase; text-decoration:none;">← Return to the Garden</a>
+      <a href="index.html" class="success-return">← Return to the Garden</a>
     </div>
 
   </div>
@@ -299,7 +304,7 @@
 <div class="trust-section">
   <div class="trust-inner">
     <div class="trust-header">
-      <p style="font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;">Your Privacy, Our Priority</p>
+      <p class="trust-eyebrow">Your Privacy, Our Priority</p>
       <h2>We Protect Our <em>Roses.</em></h2>
       <p>Every safeguard in place. No compromises, no exceptions.</p>
     </div>
@@ -347,18 +352,9 @@
   <p class="footer-copy">© 2024 250 Roses. Your privacy is sacred.</p>
 </footer>
 
+<script src="js/main.js"></script>
 <script>
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-6+'px';cursor.style.top=my-6+'px';});
-  function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx-18+'px';ring.style.top=ry-18+'px';requestAnimationFrame(ar);}ar();
-  document.querySelectorAll('a,button,.radio-option,.upload-area').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';cursor.style.background='var(--gold)';});
-    el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';cursor.style.background='var(--blush)';});
-  });
-
-  // Multi-step form
+  // Page-specific Multi-step form logic
   let currentStep = 1;
 
   function goToStep(n) {
@@ -368,13 +364,15 @@
     // Update step indicators
     for (let i = 1; i <= 4; i++) {
       const ind = document.getElementById('step-ind-' + i);
-      ind.classList.remove('active', 'done');
-      if (i < n) ind.classList.add('done');
-      if (i === n) ind.classList.add('active');
+      if (ind) {
+        ind.classList.remove('active', 'done');
+        if (i < n) ind.classList.add('done');
+        if (i === n) ind.classList.add('active');
+      }
     }
     for (let i = 1; i <= 3; i++) {
       const line = document.getElementById('line-' + i);
-      line.classList.toggle('done', i < n);
+      if (line) line.classList.toggle('done', i < n);
     }
 
     currentStep = n;
@@ -382,15 +380,21 @@
   }
 
   function submitForm() {
-    document.getElementById('formStep4').classList.remove('active');
-    document.getElementById('successScreen').style.display = 'block';
+    const step4 = document.getElementById('formStep4');
+    const success = document.getElementById('successScreen');
+    if (step4) step4.classList.remove('active');
+    if (success) success.style.display = 'block';
+    
     for (let i = 1; i <= 4; i++) {
-      document.getElementById('step-ind-' + i).classList.add('done');
-      document.getElementById('step-ind-' + i).classList.remove('active');
+      const ind = document.getElementById('step-ind-' + i);
+      if (ind) {
+        ind.classList.add('done');
+        ind.classList.remove('active');
+      }
     }
   }
 
-  // Radio selections
+  // Page-specific Radio selections
   document.querySelectorAll('.radio-group').forEach(group => {
     group.querySelectorAll('.radio-option').forEach(opt => {
       opt.addEventListener('click', () => {
@@ -400,7 +404,7 @@
     });
   });
 
-  // Checkbox
+  // Page-specific Checkbox
   document.querySelectorAll('.checkbox-group').forEach(cg => {
     const cb = cg.querySelector('input[type="checkbox"]');
     const custom = cg.querySelector('.checkbox-custom');

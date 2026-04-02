@@ -136,6 +136,8 @@ section { padding: 100px 60px; }
   color: var(--gold); margin-bottom: 24px;
   display: flex; align-items: center; gap: 16px;
 }
+.section-label.centered { justify-content: center; margin-bottom: 16px; }
+.section-label.centered::before { display: none; }
 .section-label::before {
   content: ''; width: 40px; height: 1px; background: var(--gold);
 }
@@ -206,6 +208,7 @@ section { padding: 100px 60px; }
 .featured-header h2 em { font-style: italic; color: var(--blush); }
 .featured-header p {
   font-size: 12px; letter-spacing: 0.15em; color: var(--text-muted);
+  margin-top: 12px;
 }
 
 .profile-grid {

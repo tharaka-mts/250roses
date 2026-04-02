@@ -19,8 +19,13 @@
     <div class="brand">250 <span>Roses</span></div>
     <div class="slogan">hug & party</div>
   </a>
+  <div class="menu-toggle" id="mobile-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
   <ul class="nav-links">
-    <li><a href="index.html">The Garden</a></li>
+    <li><a href="index.html" class="active">The Garden</a></li>
     <li><a href="catalog.html">The Collection</a></li>
     <li><a href="join.html">Join the Club</a></li>
     <li><a href="contact.html">The Concierge</a></li>
@@ -105,9 +110,9 @@
 <section class="featured">
   <div class="featured-inner">
     <div class="featured-header">
-      <p class="section-label" style="justify-content:center; margin-bottom:16px;">Featured Roses</p>
+      <p class="section-label centered">Featured Roses</p>
       <h2>Our <em>Finest Blooms</em></h2>
-      <p style="margin-top:12px;">A glimpse into the garden's most exquisite selections.</p>
+      <p>A glimpse into the garden's most exquisite selections.</p>
     </div>
 
     <div class="profile-grid">
@@ -183,68 +188,6 @@
   <p class="footer-copy">© 2024 250 Roses. All rights reserved. Discretion guaranteed.</p>
 </footer>
 
-<script>
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx - 6 + 'px';
-    cursor.style.top = my - 6 + 'px';
-  });
-
-  function animateRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx - 18 + 'px';
-    ring.style.top = ry - 18 + 'px';
-    requestAnimationFrame(animateRing);
-  }
-  animateRing();
-
-  document.querySelectorAll('a, button').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.transform = 'scale(2.5)';
-      cursor.style.background = 'var(--gold)';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.transform = 'scale(1)';
-      cursor.style.background = 'var(--blush)';
-    });
-  });
-
-  // Falling petals
-  const hero = document.querySelector('.hero');
-  for (let i = 0; i < 18; i++) {
-    const p = document.createElement('div');
-    p.className = 'petal';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (8 + Math.random() * 12) + 's';
-    p.style.animationDelay = (Math.random() * 10) + 's';
-    p.style.width = (4 + Math.random() * 8) + 'px';
-    p.style.height = (6 + Math.random() * 12) + 'px';
-    p.style.opacity = 0;
-    hero.appendChild(p);
-  }
-
-  // Scroll reveal
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, { threshold: 0.15 });
-
-  document.querySelectorAll('.pillar, .profile-card, .stat').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-    observer.observe(el);
-  });
-</script>
+<script src="js/main.js"></script>
 </body>
 </html>

@@ -21,6 +21,11 @@
     <div class="brand">250 <span>Roses</span></div>
     <div class="slogan">hug & party</div>
   </a>
+  <div class="menu-toggle" id="mobile-menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
   <ul class="nav-links">
     <li><a href="index.html">The Garden</a></li>
     <li><a href="catalog.html">The Collection</a></li>
@@ -282,19 +287,9 @@
   <p class="footer-copy">© 2024 250 Roses. All inquiries held in strict confidence.</p>
 </footer>
 
+<script src="js/main.js"></script>
 <script>
-  // Cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-6+'px';cursor.style.top=my-6+'px';});
-  function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx-18+'px';ring.style.top=ry-18+'px';requestAnimationFrame(ar);}ar();
-  document.querySelectorAll('a,button,.faq-question,.contact-method').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';cursor.style.background='var(--gold)';});
-    el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';cursor.style.background='var(--blush)';});
-  });
-
-  // FAQ accordion
+  // Page-specific FAQ accordion
   function toggleFaq(el) {
     const item = el.parentElement;
     const isOpen = item.classList.contains('open');
@@ -302,36 +297,31 @@
     if (!isOpen) item.classList.add('open');
   }
 
-  // Contact form
+  // Page-specific Contact form logic
   function sendMessage() {
-    const msg = document.getElementById('contactMessage').value.trim();
+    const msgInput = document.getElementById('contactMessage');
+    const msg = msgInput.value.trim();
     if (!msg) {
-      document.getElementById('contactMessage').style.borderColor = 'var(--rose)';
-      document.getElementById('contactMessage').focus();
+      msgInput.style.borderColor = 'var(--rose)';
+      msgInput.focus();
       return;
     }
     // Clear form
     ['contactName','contactDetail','contactMessage'].forEach(id => {
-      document.getElementById(id).value = '';
+      const el = document.getElementById(id);
+      if (el) el.value = '';
     });
     ['contactMethod','inquiryType'].forEach(id => {
-      document.getElementById(id).selectedIndex = 0;
+      const el = document.getElementById(id);
+      if (el) el.selectedIndex = 0;
     });
     // Show toast
     const toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 4000);
+    if (toast) {
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 4000);
+    }
   }
-
-  // Scroll reveal
-  const obs = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});
-  },{threshold:0.1});
-  document.querySelectorAll('.contact-method,.faq-item,.hours-item').forEach((el,i)=>{
-    el.style.opacity='0';el.style.transform='translateY(20px)';
-    el.style.transition=`opacity 0.6s ease ${i*0.08}s, transform 0.6s ease ${i*0.08}s`;
-    obs.observe(el);
-  });
 </script>
 </body>
 </html>
