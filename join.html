@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>250 Roses – Join the Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crimson: #8B0000;
+    --rose: #C41E3A;
+    --blush: #FF2D55;
+    --gold: #C9A96E;
+    --dark: #0A0305;
+    --darker: #060104;
+    --glass: rgba(139,0,0,0.08);
+    --glass-border: rgba(201,169,110,0.2);
+    --text: #F5E6D0;
+    --text-muted: rgba(245,230,208,0.55);
+    --success: #00c853;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--darker); color: var(--text); font-family: 'Montserrat', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 12px; height: 12px; background: var(--blush); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.15s ease, background 0.3s; mix-blend-mode: screen; }
+  .cursor-ring { width: 36px; height: 36px; border: 1px solid rgba(255,45,85,0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; }
+
+  nav { position: fixed; top: 0; width: 100%; z-index: 100; padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; background: rgba(6,1,4,0.6); border-bottom: 1px solid var(--glass-border); backdrop-filter: blur(20px); }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; letter-spacing: 0.35em; color: var(--gold); text-decoration: none; display: flex; flex-direction: column; line-height: 1.1; }
+  .logo .brand span { color: var(--blush); font-style: italic; }
+  .logo .slogan { font-family: 'Montserrat', sans-serif; font-size: 8px; font-weight: 600; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-top: 2px; font-style: normal; }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+
+  /* Hero */
+  .join-hero {
+    padding: 160px 60px 80px;
+    text-align: center;
+    position: relative; overflow: hidden;
+    background: linear-gradient(rgba(6,1,4,0.5), rgba(6,1,4,0.5)), url('src/cover-2.png') center/cover no-repeat;
+  }
+  .join-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 80% at 50% 30%, rgba(139,0,0,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .join-hero-inner { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+
+  .page-eyebrow { font-size: 9px; letter-spacing: 0.5em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .page-eyebrow::before, .page-eyebrow::after { content: ''; width: 40px; height: 1px; background: var(--gold); }
+
+  .join-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(44px, 7vw, 90px); font-weight: 600; line-height: 1.0; margin-bottom: 24px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); }
+  .join-hero h1 em { font-style: italic; color: var(--blush); }
+  .join-hero p { font-size: 13px; color: var(--text-muted); line-height: 2; letter-spacing: 0.06em; margin-bottom: 50px; font-weight: 500; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+
+  /* Progress steps */
+  .steps-bar {
+    display: flex; justify-content: center; align-items: center; gap: 0;
+    margin-top: 20px;
+  }
+  .step {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    cursor: none;
+  }
+  .step-circle {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--glass-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; letter-spacing: 0.1em;
+    color: var(--text-muted); transition: all 0.4s;
+    position: relative; background: var(--dark);
+  }
+  .step.active .step-circle { border-color: var(--rose); color: white; background: linear-gradient(135deg, var(--rose), var(--blush)); box-shadow: 0 0 20px rgba(196,30,58,0.4); }
+  .step.done .step-circle { border-color: var(--gold); color: var(--gold); background: rgba(201,169,110,0.1); }
+  .step-label { font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+  .step.active .step-label { color: var(--gold); }
+  .step-line { width: 60px; height: 1px; background: var(--glass-border); margin: 0 8px; margin-bottom: 22px; transition: background 0.4s; }
+  .step-line.done { background: var(--gold); }
+
+  /* Value props */
+  .value-props {
+    padding: 70px 60px;
+    background: var(--dark);
+    border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .value-inner { max-width: 1100px; margin: 0 auto; }
+  .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+
+  .value-item {
+    padding: 40px 36px;
+    position: relative;
+    background: var(--darker);
+    border-right: 1px solid var(--glass-border);
+    transition: background 0.4s;
+  }
+  .value-item:last-child { border-right: none; }
+  .value-item:hover { background: rgba(139,0,0,0.12); }
+
+  .value-icon { font-size: 28px; margin-bottom: 18px; display: block; }
+  .value-item h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: var(--gold); margin-bottom: 10px; }
+  .value-item p { font-size: 12px; line-height: 1.9; color: var(--text-muted); }
+
+  .value-stat {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px; font-weight: 300;
+    background: linear-gradient(135deg, var(--blush), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    display: block; margin-bottom: 4px;
+  }
+  .value-stat-label { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); }
+
+  /* Multi-step Form */
+  .form-section {
+    padding: 80px 60px;
+    max-width: 800px; margin: 0 auto;
+  }
+
+  .form-card {
+    background: rgba(10,3,5,0.8);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 56px;
+    backdrop-filter: blur(30px);
+    position: relative; overflow: hidden;
+  }
+  .form-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(to right, var(--crimson), var(--blush), var(--gold));
+  }
+
+  .form-step { display: none; }
+  .form-step.active { display: block; animation: slideIn 0.4s ease; }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 300;
+    margin-bottom: 6px;
+  }
+  .step-title em { font-style: italic; color: var(--blush); }
+  .step-subtitle { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; margin-bottom: 36px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-row.full { grid-template-columns: 1fr; }
+
+  .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .form-group label { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); }
+
+  .form-input, .form-select, .form-textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 3px;
+    padding: 14px 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px; letter-spacing: 0.05em;
+    color: var(--text);
+    outline: none; transition: all 0.3s;
+    cursor: text;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--rose);
+    background: rgba(196,30,58,0.05);
+    box-shadow: 0 0 0 3px rgba(196,30,58,0.1);
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: rgba(245,230,208,0.25); }
+  .form-select { appearance: none; cursor: none; }
+  .form-textarea { resize: vertical; min-height: 100px; }
+
+  /* Upload area */
+  .upload-area {
+    border: 1px dashed rgba(201,169,110,0.4);
+    border-radius: 4px; padding: 40px;
+    text-align: center; cursor: none;
+    transition: all 0.3s; background: rgba(255,255,255,0.02);
+  }
+  .upload-area:hover { border-color: var(--rose); background: rgba(196,30,58,0.06); }
+  .upload-icon { font-size: 36px; margin-bottom: 12px; display: block; opacity: 0.6; }
+  .upload-text { font-size: 11px; color: var(--text-muted); line-height: 1.8; }
+  .upload-text strong { color: var(--gold); }
+
+  /* Radio/checkbox custom */
+  .radio-group { display: flex; flex-wrap: wrap; gap: 10px; }
+  .radio-option {
+    padding: 10px 20px;
+    border: 1px solid var(--glass-border); border-radius: 2px;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-muted); cursor: none; transition: all 0.3s;
+    user-select: none;
+  }
+  .radio-option:hover { border-color: var(--rose); color: var(--text); }
+  .radio-option.selected { border-color: var(--rose); color: white; background: rgba(196,30,58,0.2); }
+
+  /* Checkbox */
+  .checkbox-group { display: flex; align-items: flex-start; gap: 12px; cursor: none; }
+  .checkbox-custom {
+    width: 18px; height: 18px; flex-shrink: 0;
+    border: 1px solid var(--glass-border); border-radius: 2px;
+    background: transparent; display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s; cursor: none; margin-top: 2px;
+  }
+  .checkbox-group input[type="checkbox"] { display: none; }
+  .checkbox-group input[type="checkbox"]:checked + .checkbox-custom { background: var(--rose); border-color: var(--rose); }
+  .checkbox-group input[type="checkbox"]:checked + .checkbox-custom::after { content: '✓'; font-size: 11px; color: white; }
+  .checkbox-label { font-size: 11px; line-height: 1.7; color: var(--text-muted); }
+  .checkbox-label a { color: var(--gold); }
+
+  /* Form navigation */
+  .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; }
+  .btn-prev {
+    padding: 12px 30px;
+    background: transparent; border: 1px solid var(--glass-border); border-radius: 2px;
+    font-family: 'Montserrat', sans-serif; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--text-muted); cursor: none; transition: all 0.3s;
+  }
+  .btn-prev:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-next {
+    padding: 14px 40px;
+    background: linear-gradient(135deg, var(--rose), var(--blush));
+    border: none; border-radius: 2px;
+    font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: white; cursor: none; transition: all 0.3s;
+  }
+  .btn-next:hover { box-shadow: 0 15px 30px rgba(196,30,58,0.4); transform: translateY(-2px); }
+
+  .step-counter { font-size: 10px; color: var(--text-muted); letter-spacing: 0.15em; }
+  .step-counter strong { color: var(--gold); font-family: 'Cormorant Garamond', serif; font-size: 16px; }
+
+  /* Privacy / Trust section */
+  .trust-section {
+    padding: 80px 60px;
+    background: var(--dark);
+    border-top: 1px solid var(--glass-border);
+  }
+  .trust-inner { max-width: 1100px; margin: 0 auto; }
+  .trust-header { text-align: center; margin-bottom: 60px; }
+  .trust-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(30px, 4vw, 50px); font-weight: 300; }
+  .trust-header h2 em { font-style: italic; color: var(--gold); }
+  .trust-header p { font-size: 12px; color: var(--text-muted); margin-top: 16px; letter-spacing: 0.08em; }
+
+  .trust-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+
+  .trust-item {
+    padding: 32px 28px;
+    border: 1px solid var(--glass-border); border-radius: 4px;
+    background: var(--glass);
+    display: flex; gap: 20px; align-items: flex-start;
+    transition: all 0.3s;
+  }
+  .trust-item:hover { border-color: rgba(201,169,110,0.4); background: rgba(201,169,110,0.05); }
+  .trust-icon-wrap {
+    width: 48px; height: 48px; flex-shrink: 0;
+    border: 1px solid var(--glass-border); border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; background: var(--dark);
+  }
+  .trust-item h4 { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--gold); margin-bottom: 8px; }
+  .trust-item p { font-size: 11px; line-height: 1.8; color: var(--text-muted); }
+
+  /* Success screen */
+  .success-screen {
+    display: none; text-align: center; padding: 40px 0;
+  }
+  .success-rose { font-size: 60px; display: block; margin-bottom: 24px; animation: bloom 1s ease; }
+  @keyframes bloom { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+  .success-title { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; margin-bottom: 16px; }
+  .success-title em { font-style: italic; color: var(--blush); }
+  .success-text { font-size: 12px; color: var(--text-muted); line-height: 2; max-width: 400px; margin: 0 auto; }
+
+  footer { background: var(--darker); padding: 50px 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 30px; border-top: 1px solid var(--glass-border); }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; letter-spacing: 0.3em; color: var(--gold); }
+  .footer-logo span { color: var(--blush); font-style: italic; }
+  .footer-links { display: flex; gap: 32px; flex-wrap: wrap; }
+  .footer-links a { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy { font-size: 9px; color: rgba(245,230,208,0.3); letter-spacing: 0.15em; }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .join-hero { padding: 120px 24px 60px; }
+    .value-props { padding: 50px 24px; }
+    .value-grid { grid-template-columns: 1fr; }
+    .value-item { border-right: none; border-bottom: 1px solid var(--glass-border); }
+    .form-section { padding: 50px 24px; }
+    .form-card { padding: 32px 24px; }
+    .form-row { grid-template-columns: 1fr; }
+    .trust-section { padding: 50px 24px; }
+    .trust-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+    .nav-links { display: none; }
+    .steps-bar { gap: 0; }
+    .step-line { width: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="brand">250 <span>Roses</span></div>
+    <div class="slogan">hug & party</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">The Garden</a></li>
+    <li><a href="catalog.html">The Collection</a></li>
+    <li><a href="join.html" class="active">Join the Club</a></li>
+    <li><a href="contact.html">The Concierge</a></li>
+  </ul>
+</nav>
+
+<div class="join-hero">
+  <div class="join-hero-inner">
+    <p class="page-eyebrow">Join the Club</p>
+    <h1><em>Bloom</em> With Us.<br>Become a 250 Rose.</h1>
+    <p>Step into a world of unparalleled opportunity. We cultivate careers, protect our talent, and deliver the highest earnings in the industry — all with absolute discretion.</p>
+
+    <div class="steps-bar">
+      <div class="step active" id="step-ind-1">
+        <div class="step-circle">01</div>
+        <div class="step-label">Basic Info</div>
+      </div>
+      <div class="step-line" id="line-1"></div>
+      <div class="step" id="step-ind-2">
+        <div class="step-circle">02</div>
+        <div class="step-label">Socials</div>
+      </div>
+      <div class="step-line" id="line-2"></div>
+      <div class="step" id="step-ind-3">
+        <div class="step-circle">03</div>
+        <div class="step-label">Photo Upload</div>
+      </div>
+      <div class="step-line" id="line-3"></div>
+      <div class="step" id="step-ind-4">
+        <div class="step-circle">04</div>
+        <div class="step-label">Contact</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Value propositions -->
+<div class="value-props">
+  <div class="value-inner">
+    <div class="value-grid">
+      <div class="value-item">
+        <span class="value-icon">💎</span>
+        <span class="value-stat">5× </span>
+        <span class="value-stat-label">Industry Average Earnings</span>
+        <h3 style="margin-top:16px;">High Earnings</h3>
+        <p>Our roses earn significantly above market rate. We negotiate, secure, and guarantee your compensation with full transparency.</p>
+      </div>
+      <div class="value-item">
+        <span class="value-icon">🛡️</span>
+        <span class="value-stat">100%</span>
+        <span class="value-stat-label">Safety Compliance</span>
+        <h3 style="margin-top:16px;">Absolute Safety</h3>
+        <p>Your wellbeing is our number one priority. Every booking is vetted, every client is screened, and our team is available 24/7.</p>
+      </div>
+      <div class="value-item">
+        <span class="value-icon">👑</span>
+        <span class="value-stat">Elite</span>
+        <span class="value-stat-label">Professional Management</span>
+        <h3 style="margin-top:16px;">Professional Management</h3>
+        <p>From scheduling to branding, our team handles everything so you can focus on what you do best — being extraordinary.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Multi-step form -->
+<div class="form-section">
+  <div class="form-card">
+
+    <!-- Step 1: Basic Info -->
+    <div class="form-step active" id="formStep1">
+      <h2 class="step-title">Tell Us About <em>Yourself.</em></h2>
+      <p class="step-subtitle">All information is kept strictly confidential and encrypted.</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" class="form-input" placeholder="Your first name">
+        </div>
+        <div class="form-group">
+          <label>Last Name (or Alias)</label>
+          <input type="text" class="form-input" placeholder="Last name or preferred alias">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date of Birth *</label>
+          <input type="date" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Nationality</label>
+          <input type="text" class="form-input" placeholder="Your nationality">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>City / Location *</label>
+        <input type="text" class="form-input" placeholder="Current city of residence">
+      </div>
+      <div class="form-group">
+        <label>Category of Interest *</label>
+        <div class="radio-group" id="categoryRadio">
+          <div class="radio-option" data-value="rare">Rare Bloom</div>
+          <div class="radio-option" data-value="exotic">Exotic Thorn</div>
+          <div class="radio-option" data-value="golden">Golden Petal</div>
+          <div class="radio-option" data-value="black">Black Rose</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>About You</label>
+        <textarea class="form-textarea" placeholder="Tell us what makes you extraordinary. Languages spoken, special skills, experience..."></textarea>
+      </div>
+
+      <div class="form-nav">
+        <span class="step-counter">Step <strong>1</strong> of 4</span>
+        <button class="btn-next" onclick="goToStep(2)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Step 2: Socials -->
+    <div class="form-step" id="formStep2">
+      <h2 class="step-title">Your <em>Presence.</em></h2>
+      <p class="step-subtitle">Optional — helps us understand your personal brand and reach.</p>
+
+      <div class="form-group">
+        <label>Instagram Handle</label>
+        <input type="text" class="form-input" placeholder="@yourhandle">
+      </div>
+      <div class="form-group">
+        <label>TikTok Handle</label>
+        <input type="text" class="form-input" placeholder="@yourhandle">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Total Follower Count</label>
+          <select class="form-select">
+            <option value="">Select range</option>
+            <option>Under 1K</option>
+            <option>1K – 10K</option>
+            <option>10K – 50K</option>
+            <option>50K – 100K</option>
+            <option>100K+</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Professional Website</label>
+          <input type="url" class="form-input" placeholder="https://...">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Any other platforms</label>
+        <input type="text" class="form-input" placeholder="Snapchat, OnlyFans, LinkedIn, etc.">
+      </div>
+      <div class="form-group">
+        <label>Availability</label>
+        <div class="radio-group" id="availRadio">
+          <div class="radio-option" data-value="full">Full Time</div>
+          <div class="radio-option" data-value="part">Part Time</div>
+          <div class="radio-option" data-value="weekend">Weekends Only</div>
+          <div class="radio-option" data-value="event">Events Only</div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn-prev" onclick="goToStep(1)">&larr; Back</button>
+        <span class="step-counter">Step <strong>2</strong> of 4</span>
+        <button class="btn-next" onclick="goToStep(3)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Photo Upload -->
+    <div class="form-step" id="formStep3">
+      <h2 class="step-title">Your <em>Imagery.</em></h2>
+      <p class="step-subtitle">All photos are encrypted and never shared without your written consent.</p>
+
+      <div class="form-group">
+        <label>Primary Portfolio Photo *</label>
+        <div class="upload-area" onclick="document.getElementById('photo1').click()">
+          <span class="upload-icon">🌹</span>
+          <p class="upload-text"><strong>Click to upload</strong> or drag & drop<br>PNG, JPG or WEBP · Max 10MB<br>High-resolution, clear lighting preferred</p>
+          <input type="file" id="photo1" accept="image/*" style="display:none">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Additional Photos (up to 4)</label>
+        <div class="upload-area" onclick="document.getElementById('photos').click()">
+          <span class="upload-icon">📸</span>
+          <p class="upload-text"><strong>Upload additional photos</strong><br>Different angles, outfits, settings</p>
+          <input type="file" id="photos" accept="image/*" multiple style="display:none">
+        </div>
+      </div>
+      <div class="form-group" style="margin-top:10px;">
+        <label>Photo Style</label>
+        <div class="radio-group" id="styleRadio">
+          <div class="radio-option" data-value="editorial">Editorial</div>
+          <div class="radio-option" data-value="natural">Natural</div>
+          <div class="radio-option" data-value="glamour">Glamour</div>
+          <div class="radio-option" data-value="haute">Haute Couture</div>
+        </div>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn-prev" onclick="goToStep(2)">&larr; Back</button>
+        <span class="step-counter">Step <strong>3</strong> of 4</span>
+        <button class="btn-next" onclick="goToStep(4)">Continue &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Discreet Contact -->
+    <div class="form-step" id="formStep4">
+      <h2 class="step-title">Discreet <em>Contact.</em></h2>
+      <p class="step-subtitle">We will reach you only through your preferred secure channel.</p>
+
+      <div class="form-group">
+        <label>Secure Email Address *</label>
+        <input type="email" class="form-input" placeholder="your@privateemail.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>WhatsApp Number</label>
+          <input type="tel" class="form-input" placeholder="+1 (___) ___ ____">
+        </div>
+        <div class="form-group">
+          <label>Telegram Username</label>
+          <input type="text" class="form-input" placeholder="@telegramusername">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Preferred Contact Method *</label>
+        <div class="radio-group" id="contactRadio">
+          <div class="radio-option" data-value="email">Email</div>
+          <div class="radio-option" data-value="whatsapp">WhatsApp</div>
+          <div class="radio-option" data-value="telegram">Telegram</div>
+          <div class="radio-option" data-value="signal">Signal</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Emergency Contact (Optional)</label>
+        <input type="tel" class="form-input" placeholder="Emergency contact number">
+      </div>
+      <div class="form-group" style="margin-top:24px;">
+        <label class="checkbox-group">
+          <input type="checkbox" id="terms">
+          <div class="checkbox-custom"></div>
+          <span class="checkbox-label">I confirm I am 18+ years of age and I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> of 250 Roses.</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-group">
+          <input type="checkbox" id="privacy">
+          <div class="checkbox-custom"></div>
+          <span class="checkbox-label">I understand that all submitted information is encrypted and handled with the strictest confidentiality.</span>
+        </label>
+      </div>
+
+      <div class="form-nav">
+        <button class="btn-prev" onclick="goToStep(3)">&larr; Back</button>
+        <span class="step-counter">Step <strong>4</strong> of 4</span>
+        <button class="btn-next" onclick="submitForm()">Submit Application 🌹</button>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="success-screen" id="successScreen">
+      <span class="success-rose">🌹</span>
+      <h2 class="success-title">Welcome to the <em>Garden.</em></h2>
+      <p class="success-text">Your application has been received with the utmost discretion. Our team will be in touch within 24–48 hours through your preferred contact method.</p>
+      <br><br>
+      <a href="index.html" style="color:var(--gold); font-size:10px; letter-spacing:0.25em; text-transform:uppercase; text-decoration:none;">← Return to the Garden</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Trust Section -->
+<div class="trust-section">
+  <div class="trust-inner">
+    <div class="trust-header">
+      <p style="font-size:9px;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;">Your Privacy, Our Priority</p>
+      <h2>We Protect Our <em>Roses.</em></h2>
+      <p>Every safeguard in place. No compromises, no exceptions.</p>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-item">
+        <div class="trust-icon-wrap">🔐</div>
+        <div>
+          <h4>End-to-End Encryption</h4>
+          <p>All your data, photos, and communications are encrypted using military-grade AES-256 encryption. Your identity is protected at every layer.</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon-wrap">🚫</div>
+        <div>
+          <h4>Zero Data Sharing</h4>
+          <p>We never sell, share, or disclose your personal information to any third party. Your profile is only visible to vetted clients you explicitly approve.</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon-wrap">📋</div>
+        <div>
+          <h4>Client Vetting Process</h4>
+          <p>Every client undergoes a rigorous screening process before being granted access. Your safety is non-negotiable — we turn away anyone who doesn't meet our standards.</p>
+        </div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon-wrap">📞</div>
+        <div>
+          <h4>24/7 Support Line</h4>
+          <p>Our dedicated talent team is available around the clock. Whether it's a scheduling change or an emergency, we are always one message away.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">250 <span>Roses</span></div>
+  <div class="footer-links">
+    <a href="index.html">The Garden</a>
+    <a href="catalog.html">The Collection</a>
+    <a href="join.html">Join the Club</a>
+    <a href="contact.html">The Concierge</a>
+  </div>
+  <p class="footer-copy">© 2024 250 Roses. Your privacy is sacred.</p>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-6+'px';cursor.style.top=my-6+'px';});
+  function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx-18+'px';ring.style.top=ry-18+'px';requestAnimationFrame(ar);}ar();
+  document.querySelectorAll('a,button,.radio-option,.upload-area').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';cursor.style.background='var(--gold)';});
+    el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';cursor.style.background='var(--blush)';});
+  });
+
+  // Multi-step form
+  let currentStep = 1;
+
+  function goToStep(n) {
+    document.getElementById('formStep' + currentStep).classList.remove('active');
+    document.getElementById('formStep' + n).classList.add('active');
+
+    // Update step indicators
+    for (let i = 1; i <= 4; i++) {
+      const ind = document.getElementById('step-ind-' + i);
+      ind.classList.remove('active', 'done');
+      if (i < n) ind.classList.add('done');
+      if (i === n) ind.classList.add('active');
+    }
+    for (let i = 1; i <= 3; i++) {
+      const line = document.getElementById('line-' + i);
+      line.classList.toggle('done', i < n);
+    }
+
+    currentStep = n;
+    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function submitForm() {
+    document.getElementById('formStep4').classList.remove('active');
+    document.getElementById('successScreen').style.display = 'block';
+    for (let i = 1; i <= 4; i++) {
+      document.getElementById('step-ind-' + i).classList.add('done');
+      document.getElementById('step-ind-' + i).classList.remove('active');
+    }
+  }
+
+  // Radio selections
+  document.querySelectorAll('.radio-group').forEach(group => {
+    group.querySelectorAll('.radio-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        group.querySelectorAll('.radio-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+      });
+    });
+  });
+
+  // Checkbox
+  document.querySelectorAll('.checkbox-group').forEach(cg => {
+    const cb = cg.querySelector('input[type="checkbox"]');
+    const custom = cg.querySelector('.checkbox-custom');
+    if (cb && custom) {
+      cg.addEventListener('click', () => { cb.checked = !cb.checked; });
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>250 Roses – The Concierge</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --crimson: #8B0000;
+    --rose: #C41E3A;
+    --blush: #FF2D55;
+    --gold: #C9A96E;
+    --dark: #0A0305;
+    --darker: #060104;
+    --glass: rgba(139,0,0,0.08);
+    --glass-border: rgba(201,169,110,0.2);
+    --text: #F5E6D0;
+    --text-muted: rgba(245,230,208,0.55);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--darker); color: var(--text); font-family: 'Montserrat', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+
+  .cursor { width: 12px; height: 12px; background: var(--blush); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; transition: transform 0.15s ease, background 0.3s; mix-blend-mode: screen; }
+  .cursor-ring { width: 36px; height: 36px; border: 1px solid rgba(255,45,85,0.5); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9998; }
+
+  nav { position: fixed; top: 0; width: 100%; z-index: 100; padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; background: rgba(6,1,4,0.6); border-bottom: 1px solid var(--glass-border); backdrop-filter: blur(20px); }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; letter-spacing: 0.35em; color: var(--gold); text-decoration: none; display: flex; flex-direction: column; line-height: 1.1; }
+  .logo .brand span { color: var(--blush); font-style: italic; }
+  .logo .slogan { font-family: 'Montserrat', sans-serif; font-size: 8px; font-weight: 600; color: var(--gold); letter-spacing: 0.4em; text-transform: uppercase; margin-top: 2px; font-style: normal; }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+
+  /* Hero */
+  .contact-hero {
+    padding: 160px 60px 80px;
+    position: relative; overflow: hidden;
+    background: linear-gradient(to bottom, rgba(139,0,0,0.12) 0%, transparent 100%);
+  }
+  .contact-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 50% 70% at 20% 50%, rgba(139,0,0,0.2) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .contact-hero-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+
+  .hero-left { position: relative; z-index: 1; }
+  .page-eyebrow { font-size: 9px; letter-spacing: 0.5em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; display: flex; align-items: center; gap: 16px; }
+  .page-eyebrow::before { content: ''; width: 40px; height: 1px; background: var(--gold); }
+
+  .contact-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(44px, 6vw, 80px); font-weight: 300; line-height: 1.05; margin-bottom: 24px; }
+  .contact-hero h1 em { font-style: italic; color: var(--blush); }
+  .contact-hero > .contact-hero-inner > .hero-left > p {
+    font-size: 13px; color: var(--text-muted); line-height: 2; letter-spacing: 0.06em; max-width: 420px;
+  }
+
+  /* Contact methods */
+  .contact-methods { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; }
+
+  .contact-method {
+    display: flex; align-items: center; gap: 20px;
+    padding: 22px 24px;
+    border: 1px solid var(--glass-border); border-radius: 4px;
+    background: var(--glass); backdrop-filter: blur(20px);
+    text-decoration: none; cursor: none;
+    transition: all 0.4s; position: relative; overflow: hidden;
+    group: true;
+  }
+  .contact-method::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(to bottom, var(--blush), var(--crimson));
+    transform: scaleY(0); transform-origin: top; transition: transform 0.4s;
+  }
+  .contact-method:hover { border-color: rgba(196,30,58,0.4); background: rgba(139,0,0,0.15); transform: translateX(6px); }
+  .contact-method:hover::before { transform: scaleY(1); }
+
+  .method-icon {
+    width: 48px; height: 48px; border-radius: 3px;
+    border: 1px solid var(--glass-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+    background: var(--dark);
+    transition: border-color 0.3s;
+  }
+  .contact-method:hover .method-icon { border-color: var(--rose); }
+
+  .method-info { flex: 1; }
+  .method-label { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+  .method-value { font-family: 'Cormorant Garamond', serif; font-size: 18px; color: var(--text); }
+  .method-note { font-size: 9px; color: var(--text-muted); margin-top: 2px; letter-spacing: 0.1em; }
+
+  .method-arrow { font-size: 18px; color: var(--text-muted); transition: transform 0.3s, color 0.3s; }
+  .contact-method:hover .method-arrow { transform: translateX(4px); color: var(--gold); }
+
+  /* Form card */
+  .form-panel {
+    background: rgba(10,3,5,0.85);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px; padding: 48px;
+    backdrop-filter: blur(30px);
+    position: relative; overflow: hidden;
+  }
+  .form-panel::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(to right, var(--crimson), var(--blush), var(--gold));
+  }
+
+  .form-panel h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px; font-weight: 300; margin-bottom: 6px;
+  }
+  .form-panel h3 em { font-style: italic; color: var(--blush); }
+  .form-panel .form-subtitle { font-size: 10px; color: var(--text-muted); letter-spacing: 0.15em; margin-bottom: 32px; }
+
+  .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .form-group label { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); }
+  .form-input, .form-select, .form-textarea {
+    width: 100%; background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border); border-radius: 3px;
+    padding: 13px 16px; font-family: 'Montserrat', sans-serif;
+    font-size: 12px; letter-spacing: 0.05em; color: var(--text);
+    outline: none; transition: all 0.3s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--rose); background: rgba(196,30,58,0.05);
+    box-shadow: 0 0 0 3px rgba(196,30,58,0.1);
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: rgba(245,230,208,0.25); }
+  .form-select { appearance: none; cursor: none; }
+  .form-textarea { resize: vertical; min-height: 110px; }
+
+  .btn-submit {
+    width: 100%; padding: 15px;
+    background: linear-gradient(135deg, var(--rose), var(--blush));
+    border: none; border-radius: 3px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: white; cursor: none; margin-top: 8px;
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .btn-submit::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent, rgba(255,255,255,0.1)); opacity: 0; transition: opacity 0.3s; }
+  .btn-submit:hover::after { opacity: 1; }
+  .btn-submit:hover { box-shadow: 0 20px 40px rgba(196,30,58,0.4); transform: translateY(-2px); }
+
+  .privacy-note {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 16px; padding: 12px 16px;
+    background: rgba(201,169,110,0.06);
+    border: 1px solid rgba(201,169,110,0.15); border-radius: 3px;
+  }
+  .privacy-note p { font-size: 9px; color: var(--text-muted); line-height: 1.6; letter-spacing: 0.08em; }
+  .privacy-note span { font-size: 16px; flex-shrink: 0; }
+
+  /* Divider */
+  .section-divider {
+    border: none; border-top: 1px solid var(--glass-border);
+    margin: 0;
+  }
+
+  /* FAQ */
+  .faq-section {
+    padding: 100px 60px;
+    background: var(--dark);
+  }
+  .faq-inner { max-width: 900px; margin: 0 auto; }
+  .faq-header { text-align: center; margin-bottom: 60px; }
+  .faq-eyebrow { font-size: 9px; letter-spacing: 0.5em; text-transform: uppercase; color: var(--gold); margin-bottom: 18px; }
+  .faq-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 4vw, 52px); font-weight: 300; }
+  .faq-header h2 em { font-style: italic; color: var(--blush); }
+  .faq-header p { font-size: 12px; color: var(--text-muted); margin-top: 16px; letter-spacing: 0.08em; }
+
+  /* Accordion */
+  .faq-list { display: flex; flex-direction: column; gap: 1px; }
+
+  .faq-item {
+    border: 1px solid var(--glass-border); border-radius: 4px;
+    overflow: hidden; transition: border-color 0.3s;
+    margin-bottom: 8px;
+  }
+  .faq-item.open { border-color: rgba(196,30,58,0.4); }
+
+  .faq-question {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 24px 28px; cursor: none;
+    background: var(--glass); transition: background 0.3s;
+    user-select: none;
+  }
+  .faq-question:hover { background: rgba(139,0,0,0.12); }
+  .faq-item.open .faq-question { background: rgba(139,0,0,0.15); }
+
+  .faq-q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 400; line-height: 1.4;
+    padding-right: 20px;
+  }
+  .faq-toggle {
+    width: 30px; height: 30px; flex-shrink: 0;
+    border: 1px solid var(--glass-border); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--gold);
+    transition: all 0.4s;
+  }
+  .faq-item.open .faq-toggle { transform: rotate(45deg); border-color: var(--rose); color: var(--rose); }
+
+  .faq-answer {
+    max-height: 0; overflow: hidden; transition: max-height 0.5s ease, padding 0.3s;
+    background: rgba(139,0,0,0.06);
+  }
+  .faq-item.open .faq-answer { max-height: 300px; }
+  .faq-answer-inner { padding: 20px 28px 28px; }
+  .faq-answer p { font-size: 12px; line-height: 2; color: var(--text-muted); letter-spacing: 0.05em; }
+  .faq-answer p + p { margin-top: 10px; }
+  .faq-answer strong { color: var(--gold); }
+
+  /* Hours / availability card */
+  .hours-bar {
+    padding: 60px;
+    background: var(--darker);
+    border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .hours-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; }
+
+  .hours-item {
+    padding: 36px;
+    text-align: center;
+    border-right: 1px solid var(--glass-border);
+  }
+  .hours-item:last-child { border-right: none; }
+  .hours-icon { font-size: 28px; margin-bottom: 16px; display: block; }
+  .hours-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--gold); margin-bottom: 8px; }
+  .hours-text { font-size: 11px; color: var(--text-muted); line-height: 1.8; letter-spacing: 0.06em; }
+  .hours-text strong { color: var(--text); }
+
+  /* Success toast */
+  .toast {
+    position: fixed; bottom: 30px; right: 30px;
+    background: linear-gradient(135deg, var(--rose), var(--blush));
+    padding: 16px 28px; border-radius: 4px;
+    font-size: 11px; letter-spacing: 0.15em; color: white;
+    transform: translateY(100px); opacity: 0;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1000;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  footer { background: var(--darker); padding: 50px 60px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 30px; border-top: 1px solid var(--glass-border); }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 20px; letter-spacing: 0.3em; color: var(--gold); }
+  .footer-logo span { color: var(--blush); font-style: italic; }
+  .footer-links { display: flex; gap: 32px; flex-wrap: wrap; }
+  .footer-links a { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.3s; }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-copy { font-size: 9px; color: rgba(245,230,208,0.3); letter-spacing: 0.15em; }
+
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .contact-hero { padding: 120px 24px 60px; }
+    .contact-hero-inner { grid-template-columns: 1fr; gap: 50px; }
+    .faq-section { padding: 70px 24px; }
+    .hours-bar { padding: 40px 24px; }
+    .hours-inner { grid-template-columns: 1fr; }
+    .hours-item { border-right: none; border-bottom: 1px solid var(--glass-border); }
+    footer { flex-direction: column; text-align: center; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="toast" id="toast">🌹 &nbsp;Message sent. We will be in touch discreetly.</div>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="brand">250 <span>Roses</span></div>
+    <div class="slogan">hug & party</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">The Garden</a></li>
+    <li><a href="catalog.html">The Collection</a></li>
+    <li><a href="join.html">Join the Club</a></li>
+    <li><a href="contact.html" class="active">The Concierge</a></li>
+  </ul>
+</nav>
+
+<div class="contact-hero">
+  <div class="contact-hero-inner">
+
+    <!-- Left: headline + contact methods -->
+    <div class="hero-left">
+      <p class="page-eyebrow">The Concierge</p>
+      <h1><em>Discreet</em><br>Inquiries.</h1>
+      <p>Our concierge team is available around the clock for elite clientele. All communications are encrypted and handled with absolute discretion.</p>
+
+      <div class="contact-methods">
+        <a href="mailto:hello@250roses.com" class="contact-method">
+          <div class="method-icon">✉️</div>
+          <div class="method-info">
+            <div class="method-label">Secure Email</div>
+            <div class="method-value">hello@250roses.com</div>
+            <div class="method-note">PGP encrypted · Response within 2 hours</div>
+          </div>
+          <div class="method-arrow">→</div>
+        </a>
+
+        <a href="https://wa.me/15550001234" class="contact-method" target="_blank">
+          <div class="method-icon">📱</div>
+          <div class="method-info">
+            <div class="method-label">WhatsApp</div>
+            <div class="method-value">+1 (555) 000-1234</div>
+            <div class="method-note">End-to-end encrypted · Available 24/7</div>
+          </div>
+          <div class="method-arrow">→</div>
+        </a>
+
+        <a href="https://t.me/roses250" class="contact-method" target="_blank">
+          <div class="method-icon">✈️</div>
+          <div class="method-info">
+            <div class="method-label">Telegram</div>
+            <div class="method-value">@roses250</div>
+            <div class="method-note">Secret chats available · Fastest response</div>
+          </div>
+          <div class="method-arrow">→</div>
+        </a>
+
+        <a href="#" class="contact-method">
+          <div class="method-icon">🔒</div>
+          <div class="method-info">
+            <div class="method-label">Signal</div>
+            <div class="method-value">+1 (555) 000-5678</div>
+            <div class="method-note">Maximum privacy · By appointment only</div>
+          </div>
+          <div class="method-arrow">→</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: contact form -->
+    <div class="form-panel">
+      <h3><em>Send</em> an Inquiry.</h3>
+      <p class="form-subtitle">All fields are optional except your message. We will never share your details.</p>
+
+      <div class="form-group">
+        <label>Your Name / Alias</label>
+        <input type="text" class="form-input" id="contactName" placeholder="How shall we address you?">
+      </div>
+      <div class="form-group">
+        <label>Preferred Contact Method</label>
+        <select class="form-select" id="contactMethod">
+          <option value="">Select channel</option>
+          <option>Secure Email</option>
+          <option>WhatsApp</option>
+          <option>Telegram</option>
+          <option>Signal</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Contact Detail</label>
+        <input type="text" class="form-input" id="contactDetail" placeholder="Email, phone, or username">
+      </div>
+      <div class="form-group">
+        <label>Inquiry Type</label>
+        <select class="form-select" id="inquiryType">
+          <option value="">Select type</option>
+          <option>Booking Inquiry</option>
+          <option>Membership Access</option>
+          <option>Event Partnership</option>
+          <option>Corporate / Group</option>
+          <option>General Question</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Your Message *</label>
+        <textarea class="form-textarea" id="contactMessage" placeholder="Describe your inquiry discreetly. Include preferred dates, city, and any specific requirements."></textarea>
+      </div>
+
+      <button class="btn-submit" onclick="sendMessage()">Send Discreet Inquiry &nbsp;→</button>
+
+      <div class="privacy-note">
+        <span>🔐</span>
+        <p>Your inquiry is encrypted in transit. We never log IP addresses or store metadata. Absolute discretion guaranteed.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Hours bar -->
+<div class="hours-bar">
+  <div class="hours-inner">
+    <div class="hours-item">
+      <span class="hours-icon">⏰</span>
+      <div class="hours-title">Concierge Hours</div>
+      <p class="hours-text"><strong>24 hours</strong> · 7 days a week<br>No call goes unanswered</p>
+    </div>
+    <div class="hours-item">
+      <span class="hours-icon">⚡</span>
+      <div class="hours-title">Response Time</div>
+      <p class="hours-text"><strong>Under 2 hours</strong> via secure channels<br>Priority for urgent bookings</p>
+    </div>
+    <div class="hours-item">
+      <span class="hours-icon">🌍</span>
+      <div class="hours-title">Global Reach</div>
+      <p class="hours-text"><strong>12 cities worldwide</strong><br>London · Paris · Dubai · Milan + more</p>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="faq-section">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <p class="faq-eyebrow">Frequently Asked</p>
+      <h2>Client <em>Etiquette</em> & Questions.</h2>
+      <p>Everything you need to know before making your first inquiry.</p>
+    </div>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How do I make a booking with 250 Roses?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Bookings begin with a discreet inquiry through any of our secure channels — email, WhatsApp, Telegram, or the form above. Once received, our concierge team will guide you through the selection and scheduling process.</p>
+            <p><strong>Note:</strong> We do not accept walk-in bookings. All arrangements are made in advance to ensure the highest quality experience for both client and Rose.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">What information do I need to provide?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>To ensure the safety and comfort of our talent, all clients are required to complete a brief verification process. This typically includes a form of identification, and may include a social media profile or professional reference for first-time clients.</p>
+            <p>All information is handled with <strong>absolute discretion</strong> and deleted from our systems within 30 days of engagement.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How far in advance should I book?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>We recommend booking <strong>at least 48–72 hours in advance</strong> for standard arrangements. For events, travel, or multi-day engagements, a minimum of 1 week notice is preferred to ensure the ideal match is available.</p>
+            <p>Last-minute requests are accommodated subject to availability. Premium rates may apply for same-day or next-day bookings.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">What is the expected etiquette with a Rose?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Our Roses are elite professionals deserving of the highest respect. We expect all clients to conduct themselves with dignity and courtesy at all times. <strong>Inappropriate behaviour will result in immediate termination</strong> of the engagement and permanent removal from our client list.</p>
+            <p>Treat every interaction as you would with a distinguished colleague: with grace, discretion, and respect for boundaries.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Are communications between clients and Roses private?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Yes. All communications are handled through encrypted channels and are never logged, stored, or disclosed. We operate under a strict <strong>Zero Data Retention</strong> policy for all client interactions.</p>
+            <p>Direct contact details of our Roses are never shared until both parties have consented to an engagement.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Do you offer travel and international arrangements?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Yes. Many of our Roses are available for domestic and international travel. Travel, accommodation, and all associated costs are arranged separately and transparently. Please indicate your destination and dates in your inquiry.</p>
+            <p>We operate in <strong>12 cities globally</strong> including London, Paris, Dubai, Milan, Monaco, Ibiza, New York, and more.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">What payment methods are accepted?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>We accept bank transfers, cryptocurrency (Bitcoin, Ethereum, Monero), and select digital payment platforms. All transactions are processed securely and discretely.</p>
+            <p><strong>A deposit is required</strong> to confirm all bookings. Full balance is due 24 hours prior to engagement. Detailed payment instructions are provided upon booking confirmation.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">What is the cancellation policy?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            <p>Cancellations made <strong>48+ hours in advance</strong> receive a full refund of the deposit. Cancellations within 48 hours forfeit the deposit. Same-day cancellations may be charged at the full rate.</p>
+            <p>We understand that circumstances change — our concierge team will always work with you to find a suitable alternative arrangement whenever possible.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">250 <span>Roses</span></div>
+  <div class="footer-links">
+    <a href="index.html">The Garden</a>
+    <a href="catalog.html">The Collection</a>
+    <a href="join.html">Join the Club</a>
+    <a href="contact.html">The Concierge</a>
+  </div>
+  <p class="footer-copy">© 2024 250 Roses. All inquiries held in strict confidence.</p>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx-6+'px';cursor.style.top=my-6+'px';});
+  function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx-18+'px';ring.style.top=ry-18+'px';requestAnimationFrame(ar);}ar();
+  document.querySelectorAll('a,button,.faq-question,.contact-method').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.transform='scale(2.5)';cursor.style.background='var(--gold)';});
+    el.addEventListener('mouseleave',()=>{cursor.style.transform='scale(1)';cursor.style.background='var(--blush)';});
+  });
+
+  // FAQ accordion
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
+  }
+
+  // Contact form
+  function sendMessage() {
+    const msg = document.getElementById('contactMessage').value.trim();
+    if (!msg) {
+      document.getElementById('contactMessage').style.borderColor = 'var(--rose)';
+      document.getElementById('contactMessage').focus();
+      return;
+    }
+    // Clear form
+    ['contactName','contactDetail','contactMessage'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    ['contactMethod','inquiryType'].forEach(id => {
+      document.getElementById(id).selectedIndex = 0;
+    });
+    // Show toast
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 4000);
+  }
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});
+  },{threshold:0.1});
+  document.querySelectorAll('.contact-method,.faq-item,.hours-item').forEach((el,i)=>{
+    el.style.opacity='0';el.style.transform='translateY(20px)';
+    el.style.transition=`opacity 0.6s ease ${i*0.08}s, transform 0.6s ease ${i*0.08}s`;
+    obs.observe(el);
+  });
+</script>
+</body>
+</html>
