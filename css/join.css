@@ -188,6 +188,7 @@
 
 /* Form navigation */
 .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 36px; }
+.form-nav.flex-end { justify-content: flex-end; }
 .btn-prev {
   padding: 12px 30px;
   background: transparent; border: 1px solid var(--glass-border); border-radius: 2px;

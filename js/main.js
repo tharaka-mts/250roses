@@ -1,4 +1,30 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Age Verification Logic
+    if (!localStorage.getItem('ageVerified')) {
+        const ageGateHTML = `
+            <div class="age-gate-overlay" id="ageGate">
+                <div class="age-gate-box">
+                    <div class="age-gate-logo">250 <span>Roses</span></div>
+                    <p>Welcome to 250 Roses. This site requires discretion. You must be 21 years of age or older to enter.</p>
+                    <div class="age-gate-actions">
+                        <button class="btn-primary" id="btn-21-plus">I am 21+</button>
+                        <a href="https://google.com" class="btn-ghost" style="padding: 15px 30px;">Exit</a>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', ageGateHTML);
+        
+        const ageGate = document.getElementById('ageGate');
+        setTimeout(() => ageGate.classList.add('show'), 50);
+
+        document.getElementById('btn-21-plus').addEventListener('click', () => {
+            localStorage.setItem('ageVerified', 'true');
+            ageGate.classList.remove('show');
+            setTimeout(() => ageGate.remove(), 500);
+        });
+    }
+
     // Custom cursor logic
     const cursor = document.getElementById('cursor');
     const ring = document.getElementById('cursorRing');
