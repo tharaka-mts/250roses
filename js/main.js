@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Custom cursor elements
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    
     // Age Verification Logic
     if (!localStorage.getItem('ageVerified')) {
         const ageGateHTML = `
@@ -16,9 +20,26 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.insertAdjacentHTML('beforeend', ageGateHTML);
         
         const ageGate = document.getElementById('ageGate');
+        const btn21 = document.getElementById('btn-21-plus');
+        const btnExit = ageGate.querySelector('.btn-ghost');
+        
         setTimeout(() => ageGate.classList.add('show'), 50);
 
-        document.getElementById('btn-21-plus').addEventListener('click', () => {
+        // Add cursor hover effects for modal buttons
+        if (cursor) {
+            [btn21, btnExit].forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    cursor.style.transform = 'scale(2.5)';
+                    cursor.style.background = 'var(--gold)';
+                });
+                el.addEventListener('mouseleave', () => {
+                    cursor.style.transform = 'scale(1)';
+                    cursor.style.background = 'var(--blush)';
+                });
+            });
+        }
+
+        btn21.addEventListener('click', () => {
             localStorage.setItem('ageVerified', 'true');
             ageGate.classList.remove('show');
             setTimeout(() => ageGate.remove(), 500);
@@ -26,8 +47,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Custom cursor logic
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursorRing');
     let mx = 0, my = 0, rx = 0, ry = 0;
 
     // Only enable custom cursor if device has hover capability (desktop)
